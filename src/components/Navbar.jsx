@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { FaUserAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineFullscreenExit } from "react-icons/ai";
 import { MdOutlineAccountCircle } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../features/user/userSlice";
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
+
+  const myTeams = () => {
+    navigate("/");
+    localStorage.removeItem("blist");
+  };
 
   return (
     <nav className=" fixed w-screen grid grid-flow-col grid-cols-3 bg-slate-900 shadow-lg h-20 opacity-95 z-50">
@@ -25,8 +31,11 @@ export default function Navbar() {
         className="my-auto outline-none rounded-sm bg-slate-600 h-7 bg-opacity-60 pl-2 placeholder:text-slate-50"
       />
       <div className="w-full flex items-center justify-end  text-zinc-100">
-        <button className=" bg-slate-600 px-2 text-lg mr-14 rounded-sm hover:bg-slate-200 hover:text-slate-600">
-          <Link to={"/"}>My Teams</Link>
+        <button
+          onClick={myTeams}
+          className=" bg-slate-600 px-2 text-lg mr-14 rounded-sm hover:bg-slate-200 hover:text-slate-600"
+        >
+          My Teams
         </button>
         <p className="text-xl  w-28 text-right hover:underline-offset-4 hover:underline capitalize">
           {user.logged ? user.name[0] : <Link to={"/login"}>LogIn</Link>}

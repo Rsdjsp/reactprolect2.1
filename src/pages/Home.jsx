@@ -34,12 +34,14 @@ export default function Home() {
     <div className="w-screen  h-screen bg-[url('https://images.pexels.com/photos/2346594/pexels-photo-2346594.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940')] bg-cover fixed -z-10 ">
       <section className="mt-20 bg-slate-200 w-screen h-screen max-h-screen bg-opacity-60 overflow-y-auto  ">
         <div className="w-full text-center pt-6">
-          <button
-            onClick={() => setModal(true)}
-            className="bg-slate-900 opacity-95 text-slate-50 px-2 mb-4 rounded-md text-xl shadow-md hover:bg-slate-700"
-          >
-            Add Team
-          </button>
+          {logged && (
+            <button
+              onClick={() => setModal(true)}
+              className="bg-slate-900 opacity-95 text-slate-50 px-2 mb-4 rounded-md text-xl shadow-md hover:bg-slate-700"
+            >
+              Add Team
+            </button>
+          )}
         </div>
         <div className="mb-10">{logged && <Teams />}</div>
         {modal && (

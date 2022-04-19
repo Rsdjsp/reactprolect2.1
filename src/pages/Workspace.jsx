@@ -20,7 +20,7 @@ export default function Workspace() {
             className="w-screen h-screen absolute top-0 left-0 -z-20 "
           />
           <Nav images={images} team={team} />
-          <section className="w-full h-full overflow-y-auto pl-5 relative  overflow-x-auto">
+          <section className="w-full h-full overflow-y-auto pl-5 relative max-w-none  overflow-x-auto">
             <DragAndDrop2 />
             {/* {lists && <DragAndDrop />} */}
           </section>
