@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { getList, createList } from "../features/user/teamSlice";
 import { FaPlus } from "react-icons/fa";
 import { AiOutlineCloseSquare } from "react-icons/ai";
 import { get, post } from "../api";
+import { HiOutlinePlusSm } from "react-icons/hi";
+import { CgCloseR } from "react-icons/cg";
 
 export default function DragandDrop2() {
-  const dispatch = useDispatch();
   const { id } = useParams();
   const [list, updateList] = useState(
     JSON.parse(localStorage.getItem("blist"))
   );
   const [modal, setModal] = useState(false);
   const [listTitle, setListTitle] = useState("");
+  const [selectedList, setSelectedList] = useState("");
+  const [modal2, setModal2] = useState(false);
+
+  console.log(selectedList);
 
   useEffect(() => {
     if (localStorage.getItem("blist") === null) {
@@ -27,12 +30,12 @@ export default function DragandDrop2() {
     }
   }, [id]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     localStorage.removeItem("blist");
     let newList = list;
     const idTeam = id;
-    post("/workList", {
+     await post("/workList", {
       title: listTitle,
       team: idTeam,
     }).then(({ data }) => {
@@ -40,23 +43,23 @@ export default function DragandDrop2() {
       localStorage.setItem("blist", JSON.stringify(newList));
       updateList(JSON.parse(localStorage.getItem("blist")));
     });
-
     setTimeout(() => {
       setModal(false);
     }, 1000);
   };
 
-  // const actualList = () => {
-  //   if (lists) {
-  //     const newList = lists.slice(lists.length - 1, lists.length);
-  //     console.log(newList);
-  //     const currentArray = JSON.parse(localStorage.getItem("blist"));
-  //     console.log(currentArray);
-  //     const newArray = currentArray.push(newList);
-  //     console.log(newArray);
-  //    localStorage.removeItem("blist");
-  //   }
-  // };
+  const newTask = (event) => {
+   event.preventDefault()
+
+   
+ }
+
+
+
+
+
+
+
   const onDragEnd = (result, list) => {
     if (!result.destination) return;
     const { source, destination, draggableId } = result;
@@ -106,15 +109,15 @@ export default function DragandDrop2() {
             {list.map(({ _id, title, tasks }, index) => {
               return (
                 <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
+                  className="flex flex-col items-center bg-zinc-200 border-2 border-slate-300 mt-12 mx-3 h-fit rounded-sm shadow-lg relative"
                   key={_id}
                 >
-                  <h2>{title}</h2>
-                  <div style={{ margin: 8 }}>
+                  <header className=" w-full px-5 mt-2">
+                    <h2 className="text-slate-800 font-semibold text-lg capitalize ">
+                      {title}
+                    </h2>
+                  </header>
+                  <div className="m-4 mt-2">
                     <Droppable droppableId={_id} key={_id}>
                       {(provided, snapshot) => {
                         return (
@@ -124,7 +127,7 @@ export default function DragandDrop2() {
                             style={{
                               background: snapshot.isDraggingOver
                                 ? "lightblue"
-                                : "lightgrey",
+                                : "transparent",
                               padding: 4,
                               width: 250,
                               minHeight: 100,
@@ -152,8 +155,10 @@ export default function DragandDrop2() {
                                             ? "#263B4A"
                                             : "#456C86",
                                           color: "white",
+
                                           ...provided.draggableProps.style,
                                         }}
+                                        className="rounded-sm capitalize shadow-md"
                                       >
                                         {title}
                                       </div>
@@ -168,6 +173,52 @@ export default function DragandDrop2() {
                       }}
                     </Droppable>
                   </div>
+                  <article className="w-full px-6 flex justify-end mb-2">
+                    <button
+                      onClick={() => {
+                        setSelectedList(_id);
+                        setModal2(true);
+                      }}
+                      className="flex text-slate-800 font-medium hover:text-emerald-700 hover:shadow-lg"
+                    >
+                      <span className="my-auto">
+                        <HiOutlinePlusSm />
+                      </span>
+                      Add Task...
+                    </button>
+                  </article>
+                  {modal2 && selectedList === _id && (
+                    <div className=" bg-slate-100 w-72  top-full  h-fit absolute border-slate-600 shadow-xl">
+                      <form className="mx-4 relative" onSubmit={newTask}>
+                        <h3 className="w-full pt-4 pb-2 text-lg justify-center flex font-medium text-emerald-700">
+                          New Task
+                        </h3>
+                        <button
+                          onClick={() => setModal2(false)}
+                          className="text-emerald-700 font-lg absolute right-0 top-3"
+                        >
+                          <CgCloseR />
+                        </button>
+                        <input
+                          type={"text"}
+                          name="title"
+                          id="title"
+                          placeholder="Title..."
+                          className="w-full border-slate-300 pl-2 font-medium outline-none focus:border-emerald-600 border-2 "
+                        ></input>
+                        <textarea
+                          type="text"
+                          className="w-full border-slate-300 pl-2 h-20 mt-6 pt-0  items-start align-top font-medium outline-none focus:border-emerald-600 border-2"
+                          placeholder="Description..."
+                        />
+                        <article className="w-full flex justify-center">
+                          <button className="bg-emerald-700 rounded-sm text-slate-200 px-2 my-4">
+                            Submit
+                          </button>
+                        </article>
+                      </form>
+                    </div>
+                  )}
                 </div>
               );
             })}

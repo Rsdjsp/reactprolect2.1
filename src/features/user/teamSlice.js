@@ -28,17 +28,6 @@ export const createTeam = createAsyncThunk(
   }
 );
 
-export const createList = createAsyncThunk(
-  "team/newlist",
-  async (data, thunkAPI) => {
-    const response = await post("/workList", {
-      title: data.listTitle,
-      team: data.idTeam,
-    });
-    return response.data;
-  }
-);
-
 export const addTask = createAsyncThunk("team/task", async (data, thunkAPI) => {
   const response = await post("/workList/newTask", {
     task: data.task,
@@ -65,13 +54,6 @@ export const getTeams = createAsyncThunk(
     return response.data;
   }
 );
-export const getList = createAsyncThunk(
-  "getTeam/Lists",
-  async (data, thunkAPI) => {
-    const response = await get(`/workList/${data.id}`);
-    return response.data;
-  }
-);
 
 const teamSlice = createSlice({
   name: "team",
@@ -80,8 +62,6 @@ const teamSlice = createSlice({
     teams: [],
     images: [],
     users: [],
-    lists: [],
-    tasks: [],
     error: false,
     message: "",
   },
@@ -121,18 +101,6 @@ const teamSlice = createSlice({
         state.message = "success";
       })
       .addCase(fetchUsers.rejected, (state, action) => {
-        state.loading = false;
-        state.error = true;
-      })
-      .addCase(getList.pending, (state, action) => {
-        state.loading = true;
-      })
-      .addCase(getList.fulfilled, (state, action) => {
-        state.loading = false;
-        state.lists = action.payload;
-        state.message = "success";
-      })
-      .addCase(getList.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
       });

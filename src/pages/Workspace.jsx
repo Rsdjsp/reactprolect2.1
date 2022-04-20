@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import DragAndDrop from "../components/DragAndDrop";
 import DragAndDrop2 from "../components/DragandDrop2";
 import Nav from "../components/Nav";
 
@@ -22,7 +21,6 @@ export default function Workspace() {
           <Nav images={images} team={team} />
           <section className="w-full h-full overflow-y-auto pl-5 relative max-w-none  overflow-x-auto">
             <DragAndDrop2 />
-            {/* {lists && <DragAndDrop />} */}
           </section>
         </div>
       )}
