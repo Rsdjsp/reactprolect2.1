@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { FaPlus } from "react-icons/fa";
@@ -16,8 +16,7 @@ export default function DragandDrop2() {
   const [listTitle, setListTitle] = useState("");
   const [selectedList, setSelectedList] = useState("");
   const [modal2, setModal2] = useState(false);
-
-  console.log(selectedList);
+  const description = useRef();
 
   useEffect(() => {
     if (localStorage.getItem("blist") === null) {
@@ -35,7 +34,7 @@ export default function DragandDrop2() {
     localStorage.removeItem("blist");
     let newList = list;
     const idTeam = id;
-     await post("/workList", {
+    await post("/workList", {
       title: listTitle,
       team: idTeam,
     }).then(({ data }) => {
@@ -48,17 +47,40 @@ export default function DragandDrop2() {
     }, 1000);
   };
 
-  const newTask = (event) => {
-   event.preventDefault()
+  const newTask = async (event) => {
+    event.preventDefault();
+    let newList = Array.from(list);
+    const column = list.find((li) => li._id === selectedList);
+    const listIndex = list.indexOf(column, 0);
+    const actualItems = Array.from(column.tasks);
 
-   
- }
+    const {
+      title: { value: title },
+    } = event.target;
 
-
-
-
-
-
+    await post("/task", {
+      title: title,
+      description: description.current.value,
+      idList: selectedList,
+    })
+      .then(({ data }) => {
+        actualItems.splice(actualItems.length, 0, data.task);
+        const newColumn = {
+          _id: column._id,
+          title: column.title,
+          createDate: column.createDate,
+          creator: column.creator,
+          tasks: actualItems,
+        };
+        newList.splice(listIndex, 1, newColumn);
+        localStorage.setItem("blist", JSON.stringify(newList));
+        updateList(JSON.parse(localStorage.getItem("blist")));
+      })
+      .catch((error) => console.log(error));
+    setTimeout(() => {
+      setModal2(false);
+    }, 1000);
+  };
 
   const onDragEnd = (result, list) => {
     if (!result.destination) return;
@@ -207,6 +229,9 @@ export default function DragandDrop2() {
                           className="w-full border-slate-300 pl-2 font-medium outline-none focus:border-emerald-600 border-2 "
                         ></input>
                         <textarea
+                          ref={description}
+                          name="description"
+                          id="description"
                           type="text"
                           className="w-full border-slate-300 pl-2 h-20 mt-6 pt-0  items-start align-top font-medium outline-none focus:border-emerald-600 border-2"
                           placeholder="Description..."
