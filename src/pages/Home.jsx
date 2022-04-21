@@ -4,6 +4,7 @@ import Teams from "../components/Teams";
 import { createTeam, getTeams } from "../features/user/teamSlice";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ export default function Home() {
   const [modal, setModal] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
-  const { logged } = useSelector((state) => state.user);
+  const { logged, loading } = useSelector((state) => state.user);
 
   const addTeam = (event) => {
     event.preventDefault();
@@ -34,6 +35,7 @@ export default function Home() {
     <div className="w-screen  h-screen bg-[url('https://images.pexels.com/photos/2346594/pexels-photo-2346594.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940')] bg-cover fixed -z-10 ">
       <section className="mt-20 bg-slate-200 w-screen h-screen max-h-screen bg-opacity-60 overflow-y-auto  ">
         <div className="w-full text-center pt-6">
+          {loading && <Loading />}
           {logged && (
             <button
               onClick={() => setModal(true)}

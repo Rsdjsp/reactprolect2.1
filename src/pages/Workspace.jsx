@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import DragAndDrop2 from "../components/DragandDrop2";
+import Loading from "../components/Loading";
 
 import Nav from "../components/Nav";
 
@@ -9,9 +10,11 @@ export default function Workspace() {
   const { id } = useParams();
   const { teams, images } = useSelector((state) => state.team);
   const team = teams.find((team) => team._id === id);
+  const { loading } = useSelector((state) => state.user);
 
   return (
     <>
+      {loading && <Loading />}
       {team && (
         <div className="w-screen  h-screen pt-20 overflow-x-hidden overflow-y-hidden font-sans pb-14 ">
           <img
