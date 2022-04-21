@@ -40,6 +40,9 @@ export default function Nav({ images, team }) {
       idTeam: idTeam,
     });
     dispatch(getTeams());
+    setTimeout(() => {
+      setModal(false);
+    }, 100);
   };
 
   const regUsers = async (e) => {

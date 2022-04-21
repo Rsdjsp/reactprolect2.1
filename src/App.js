@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import { fetchImages, getList, getTeams } from "./features/user/teamSlice";
+import { fetchImages, getTeams } from "./features/user/teamSlice";
 import { validateSession } from "./features/user/userSlice";
 import Home from "./pages/Home";
 import LogIn from "./pages/LogIn";
